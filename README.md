@@ -1,6 +1,6 @@
 
 # **C.rch (Crawl Search) | Research AI agent**
-
+![hippo](https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExb2hzbGwydGEzN3E0NmN2eHpvaGNqendrNHl0dXJsenJnd2c2Z25rcSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/NXJXsuKY0pzr4tYUoe/giphy.gif)
 ## **Overview**
 
 **C.rch** (Crawl Search) is a full-stack, AI-powered research assistant designed to autonomously map the historical lineage of complex academic concepts. Give it a topic (e.g., "State Space Models" or "Federated Learning"), and the underlying AI agent will autonomously search the **OpenAlex database**, crawl forward and backward through citation trees, identify foundational heavyweights, and render a chronological timeline using **Mermaid.js**.  

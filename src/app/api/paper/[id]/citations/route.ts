@@ -10,12 +10,11 @@ export const maxDuration = 60;
  * Fetch citation trend data for a specific paper.
  * Returns only the citation counts by year.
  */
-export async function GET(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
+  
+export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }){
   try {
-    const paperId = params.id;
+    const resolvedParams = await params;
+    const paperId = resolvedParams.id;
     
     // Validate paper ID format
     if (!paperId || (!paperId.startsWith('W') && !/^\d+$/.test(paperId))) {

@@ -172,8 +172,8 @@ Focus on highly-cited, influential papers. Limit total papers to 10-15 for clari
 
               // Track relationships based on tool type
               if (call.name === 'crawl_citation_graph') {
-                const direction = call.args.direction || 'citations';
-                const sourcePaperId = call.args.paperId;
+                const direction = (call.args as any).direction || 'citations';
+                const sourcePaperId = (call.args as any).paperId;
 
                 result.forEach(paper => {
                   if (direction === 'citations') {

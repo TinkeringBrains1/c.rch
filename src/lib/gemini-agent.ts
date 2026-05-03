@@ -124,7 +124,7 @@ export async function researchTopic(topic: string): Promise<GraphData> {
     const model = genAI.getGenerativeModel({
       model: AGENT_CONFIG.model,
       systemInstruction: AGENT_CONFIG.systemInstruction,
-      tools: [{ functionDeclarations }],
+      tools: [{ functionDeclarations: functionDeclarations as any }],
       generationConfig: {
         temperature: AGENT_CONFIG.temperature,
       }

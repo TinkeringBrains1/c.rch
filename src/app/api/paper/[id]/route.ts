@@ -11,12 +11,10 @@ export const maxDuration = 60;
  * Fetch comprehensive paper details by OpenAlex ID.
  * Checks cache first, then fetches from OpenAlex API if needed.
  */
-export async function GET(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
+export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }){
   try {
-    const paperId = params.id;
+    const resolvedParams = await params;
+    const paperId = resolvedParams.id;
     
     // Validate paper ID format (should start with W or be just numbers)
     if (!paperId || (!paperId.startsWith('W') && !/^\d+$/.test(paperId))) {

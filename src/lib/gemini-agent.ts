@@ -5,7 +5,7 @@
  * and citation graph mapping. Implements a simple ReAct (Reasoning and Acting) loop.
  */
 
-import { GoogleGenerativeAI, SchemaType } from '@google/generative-ai';
+import { GoogleGenerativeAI, SchemaType, FunctionDeclaration } from '@google/generative-ai';
 import { PaperNode, PaperEdge, GraphData } from '@/types/database';
 import {
   searchFoundationalPapers,
@@ -58,10 +58,10 @@ const functionDeclarations = researchToolDefinitions.map(tool => ({
   description: tool.description,
   parameters: {
     type: SchemaType.OBJECT,
-    properties: tool.parameters.properties,
+    properties: tool.parameters.properties as any,
     required: tool.parameters.required
   }
-}));
+})) as FunctionDeclaration[];
 
 /**
  * Execute a tool function call
@@ -266,4 +266,3 @@ export function isGeminiConfigured(): boolean {
   return !!process.env.GEMINI_API_KEY;
 }
 
-// Made with Bob

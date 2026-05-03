@@ -3,27 +3,36 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "node --max-old-space-size=4096 node_modules/next/dist/bin/next dev",
+    "build": "node --max-old-space-size=4096 node_modules/next/dist/bin/next build",
     "start": "next start",
     "lint": "eslint"
   },
   "dependencies": {
-    "axios": "^1.15.2",
-    "mermaid": "^11.14.0",
-    "next": "16.2.4",
-    "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "@google/generative-ai": "^0.21.0",
+    "@ibm-cloud/cloudant": "^0.12.19",
+    "@xyflow/react": "^12.10.2",
+    "axios": "^1.16.0",
+    "dagre": "^0.8.5",
+    "lucide-react": "^1.14.0",
+    "next": "^16.2.4",
+    "next-auth": "^4.24.14",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5",
+    "reactflow": "^11.11.0",
+    "recharts": "^2.12.0"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4",
+    "@types/dagre": "^0.7.52",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "autoprefixer": "^10.4.20",
     "babel-plugin-react-compiler": "1.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.2.4",
-    "tailwindcss": "^4",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.17",
     "typescript": "^5"
   }
 }

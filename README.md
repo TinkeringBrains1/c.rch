@@ -1,87 +1,57 @@
-
-# **C.rch (Crawl Search) | Research AI agent**
+# **C.RCH | Research Paper Citation Network Explorer**
 
 ## **Overview**
 
-**C.rch** (Crawl Search) is a full-stack, AI-powered research assistant designed to autonomously map the historical lineage of complex academic concepts. Give it a topic (e.g., "State Space Models" or "Federated Learning"), and the underlying AI agent will autonomously search the **OpenAlex database**, crawl forward and backward through citation trees, identify foundational heavyweights, and render a chronological timeline using **Mermaid.js**.  
-Instead of a standard RAG pipeline, **c.rch** uses a live ReAct (Reasoning and Acting) agent loop powered by the **Hermes Agent Framework**, allowing the AI to dynamically decide how deep to crawl based on the data it finds.
+**C.RCH** (Crawl Search) is a full-stack, AI-powered research assistant designed to autonomously map the historical lineage of complex academic concepts. Give it a topic (e.g., "CRISPR gene editing" or "Federated Learning"), and the underlying AI agent will autonomously search the **OpenAlex database**, crawl forward and backward through citation trees, identify foundational heavyweights, and render a chronological hierarchical timeline.
+
+C.RCH uses a live ReAct (Reasoning and Acting) agent loop powered by **Google Gemini (2.5 Flash Lite)**, allowing the AI to dynamically decide how deep to crawl based on the data it finds, mapping both forward citations and backward references to track intellectual lineage.
 
 ## **Architecture & Tech Stack**
 
-The project runs on a decoupled, dual-engine architecture:
+### **1. The Frontend**
+* **Framework:** Next.js (App Router)
+* **Styling:** Tailwind CSS (featuring a clean, high-contrast Neo-brutalist UI)
+* **Rendering:** React Flow & Dagre for interactive, hierarchical topological graphing
 
-### **1\. The Frontend (Next.js)**
-
-* **Framework:** Next.js (App Router)  
-* **Styling:** Tailwind CSS  
-* **Networking:** Axios (configured for long-polling agent responses)  
-* **Rendering:** mermaid.js for dynamic topological graphing
-
-### **2\. The Backend / Brain (Hermes Agent Framework)**
-
-* **Agent Engine:** Hermes Framework running an OpenAI-compatible API Gateway  
-* **LLM:** Anthropic Claude (Sonnet)  
-* **Custom Tools:** Python-based integration with the OpenAlex API (research\_tool.py)  
-* **Prompting:** File-based context injected via SOUL.md and AGENTS.md
+### **2. The Brain / AI Agent**
+* **Agent Engine:** Custom ReAct loop built directly in Next.js API Routes (`gemini-agent.ts`)
+* **LLM:** Google Gemini 2.5 Flash Lite (`@google/generative-ai`)
+* **Data Source:** OpenAlex API integrations for real-time academic paper discovery
+* **Authentication:** NextAuth.js (Google OAuth)
 
 ## **Getting Started**
 
 ### **Prerequisites**
+* **Node.js** (v18+)
+* **Google Gemini API Key**
 
-* **Node.js** (v18+)  
-* **Python** (3.11+)  
-* **uv** (Python package manager)  
-* **Hermes Agent** installed globally
-
-### **1\. Configure the Hermes Gateway**
-
-c.rch requires the Hermes API server to be active. Open your global Hermes configuration file (\~/.hermes/.env) and add the following security bypasses for local development:  
-```
-GATEWAY\_ALLOW\_ALL\_USERS=true  
-API\_SERVER\_ENABLED=true  
-API\_SERVER\_KEY=hackathon-key
-```
-*Ensure your SOUL.md and tools/research\_tool.py are properly placed in your Hermes directory.*
-
-### **2\. Install Frontend Dependencies**
-
-Navigate to the root of the cartographer-app directory and install the Node packages:  
-```
-npm install  
-\# Ensures mermaid and axios are installed  
-npm install mermaid axios 
+### **1. Configure Environment Variables**
+Create a `.env.local` file in the root directory and add:
+```env
+GEMINI_API_KEY=your_gemini_api_key_here
+NEXTAUTH_SECRET=your_nextauth_secret
+NEXTAUTH_URL=http://localhost:3000
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
 ```
 
-### **3\. Final Setup**
-
-You need to run the Agent Engine and the UI server simultaneously.  
-
-**Terminal 1 (The Brain):**  
-Boot the Hermes API Gateway on port 8642\.  
-```
-hermes gateway run \--model anthropic/claude-sonnet-4-6
+### **2. Install Dependencies**
+Navigate to the root directory and install the Node packages:
+```bash
+npm install
 ```
 
-**Terminal 2 (The UI):**  
-Start the Next.js development server.  
-```
+### **3. Start the Application**
+Start the Next.js development server:
+```bash
 npm run dev
 ```
 
 ## **How the Agent Thinks (The ReAct Loop)**
 
-When a user submits a query, the following autonomous loop is triggered:
+When a user submits a research topic, the following autonomous loop is triggered:
 
-1. **Goal Assignment:** The Next.js API route tasks the agent with mapping the foundational history of the concept, capped at a maximum of 3-5 tool calls to ensure speed.  
-2. **Phase 1 (Search):** The agent writes and executes a query using the search\_foundational\_papers OpenAlex tool to find the highest-cited root nodes.  
-3. **Phase 2 (Crawl):** The agent reads the JSON response, isolates the crucial DOIs, and autonomously triggers crawl\_citation\_graph to find the most influential derived works.  
-4. **Phase 3 (Synthesis & Render):** The agent formats the retrieved graph data into a strict flowchart TD Mermaid.js syntax and returns it to the Next.js client for live rendering.
-
-## **Troubleshooting**
-
-* **401 Unauthorized Error:** Ensure API\_SERVER\_KEY=hackathon-key is correctly set in your \~/.hermes/.env file and that you restarted the Hermes Gateway.  
-* **Mermaid Syntax/Bomb Icon Error:** This occurs if the agent includes unescaped quotes or conversational text. The Next.js API route (route.ts) uses strict Regex to extract only the mermaid code block.  
-* **Timeout Errors:** The Next.js fetch has a hard 5-minute limit. We utilize axios in the route.ts file to allow the agent up to 10 minutes to complete deep citation crawls.
-
-
-
+1. **Goal Assignment:** The agent is tasked with mapping the foundational history of the concept (capped at a max of 5 tool calls for speed).
+2. **Phase 1 (Search):** The agent executes a query using the `search_foundational_papers` tool targeting the OpenAlex database to find the highest-cited root nodes.
+3. **Phase 2 (Crawl):** The agent isolates crucial DOIs and autonomously triggers `crawl_citation_graph` to map backwards (references) and forwards (citations) to find influential derived works.
+4. **Phase 3 (Synthesis & Render):** The agent structures the retrieved data into unified Nodes and Edges, applying a hierarchical edge-normalization algorithm to ensure chronological top-to-bottom layout before rendering via React Flow.
